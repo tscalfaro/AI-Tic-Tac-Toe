@@ -26,7 +26,6 @@ function startGame() {
 }
 
 function turnClick(square) {
-  //Neither hu or aiPlayer have played in that spot
   if (typeof origBoard[square.target.id] === "number") {
     turn(square.target.id, huPlayer);
     if (!checkTie()) turn(bestSpot(), aiPlayer);
@@ -68,8 +67,8 @@ function declareWinner(who) {
   document.querySelector(".endgame .text").innerText = who;
 }
 
-function emptySquares() {
-  return origBoard.filter((s) => typeof s == "number");
+function emptySquares(board = origBoard) {
+  return board.filter((s) => typeof s == "number");
 }
 
 function bestSpot() {
@@ -91,8 +90,7 @@ function checkTie() {
 function minimax(newBoard, player) {
   let availSpots = emptySquares(newBoard);
 
-  //CHECK TERMINAL STATES
-  if (checkWin(newBoard, player)) {
+  if (checkWin(newBoard, huPlayer)) {
     return { score: -10 };
   } else if (checkWin(newBoard, aiPlayer)) {
     return { score: 20 };
@@ -106,11 +104,12 @@ function minimax(newBoard, player) {
     move.index = newBoard[availSpots[i]];
     newBoard[availSpots[i]] = player;
 
+    let result;
     if (player === aiPlayer) {
-      var result = minimax(newBoard, huPlayer);
+      result = minimax(newBoard, huPlayer);
       move.score = result.score;
     } else {
-      var result = minimax(newBoard, aiPlayer);
+      result = minimax(newBoard, aiPlayer);
       move.score = result.score;
     }
 
@@ -127,7 +126,7 @@ function minimax(newBoard, player) {
         bestMove = i;
       }
     }
-  } else if (player === huPlayer) {
+  } else {
     var bestScore = Infinity;
     for (var i = 0; i < moves.length; i++) {
       if (moves[i].score < bestScore) {
