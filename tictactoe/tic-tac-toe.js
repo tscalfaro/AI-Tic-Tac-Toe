@@ -72,7 +72,23 @@ function emptySquares(board = origBoard) {
 }
 
 function bestSpot() {
-  return minimax(origBoard, aiPlayer).index;
+  let availSpots = emptySquares();
+  let bestScore = -Infinity;
+  let bestSpot;
+
+  availSpots.forEach((spot) => {
+    let tempBoard = [...origBoard];
+    tempBoard[spot] = aiPlayer;
+
+    let score = minimax(tempBoard, huPlayer).score;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestSpot = spot;
+    }
+  });
+
+  return bestSpot;
 }
 
 function checkTie() {
